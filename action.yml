@@ -1,0 +1,42 @@
+name: 'Multi-LLM Code Quality Pipeline'
+description: 'Automated code analysis, improvement, and verification using multiple LLMs'
+branding:
+  icon: 'code'
+  color: 'blue'
+
+inputs:
+  github-token:
+    description: 'GitHub token for API access'
+    required: true
+  gemini-api-key:
+    description: 'Google Gemini API key'
+    required: true
+  openai-api-key:
+    description: 'OpenAI API key'
+    required: true
+  anthropic-api-key:
+    description: 'Anthropic Claude API key'
+    required: true
+  deepseek-api-key:
+    description: 'DeepSeek API key'
+    required: true
+  pr-number:
+    description: 'Pull request number'
+    required: true
+  repository:
+    description: 'Repository name (owner/repo)'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - run: python main.py
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GEMINI_API_KEY: ${{ inputs.gemini-api-key }}
+        OPENAI_API_KEY: ${{ inputs.openai-api-key }}
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key }}
+        DEEPSEEK_API_KEY: ${{ inputs.deepseek-api-key }}
+        PR_NUMBER: ${{ inputs.pr-number }}
+        REPOSITORY: ${{ inputs.repository }}

@@ -1,0 +1,44 @@
+name: Multi-LLM Code Quality Pipeline
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main, master, develop]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  code-quality-pipeline:
+    runs-on: ubuntu-latest
+    name: Multi-LLM Code Analysis Pipeline
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests PyGithub python-dotenv openai anthropic google-genai
+    
+    - name: Run Multi-LLM Pipeline
+      uses: ./
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+        openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+        anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+        deepseek-api-key: ${{ secrets.DEEPSEEK_API_KEY }}
+        pr-number: ${{ github.event.pull_request.number }}
+        repository: ${{ github.repository }}
